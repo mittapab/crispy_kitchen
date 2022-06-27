@@ -46,15 +46,15 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="menu.html">Menu</a>
+                            <a class="nav-link <?php  echo (is_page('menu')) ? "active":"";  ?>" href="<?php echo site_url("/menu");  ?>">Menu</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="news.html">Our Updates</a>
+                            <a class="nav-link <?php  echo (is_page('news')) ? "active":""  ?>" href="<?php  echo site_url("/news")  ?>">Our Updates</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="contact.html">Contact</a>
+                        <a class="nav-link <?php  echo (is_page('contact')) ? "active":""  ?>" href="<?php  echo site_url("/contact")  ?>">Contact</a>
                         </li>
                     </ul>
                 </div>
