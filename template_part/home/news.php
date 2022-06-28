@@ -1,92 +1,58 @@
+<?php  
+$args = array(
+    'posts_per_page' => 5
+);
+$post_new = new WP_Query($args);  
+$count_post = 1;
+?>
+
 <section class="news section-padding">
                 <div class="container">
                     <div class="row">
 
                         <h2 class="text-center mb-lg-5 mb-4">News &amp; Events</h2>
+                        <?php   while( $post_new->have_posts()): $post_new->the_post();    ?>
 
+                        <?php  if($count_post <= 2 ){   ?>
                         <div class="col-lg-6 col-md-6 col-12">
                             <div class="news-thumb mb-4">
                                 <a href="news-detail.html">
-                                    <img src="<?php echo get_theme_file_uri("/assets/images/news/pablo-merchan-montes-Orz90t6o0e4-unsplash.jpg");?>" class="img-fluid news-image" alt="">
+                                    <img src="<?php echo get_the_post_thumbnail_url();?>" class="img-fluid news-image" alt="">
                                 </a>
                                 
                                 <div class="news-text-info news-text-info-large">
-                                    <span class="category-tag bg-danger">Featured</span>
+                                    <span class="category-tag bg-danger"><?php echo get_the_terms($post->ID, 'category')[0]->name;    ?></span>
 
                                     <h5 class="news-title mt-2">
-                                        <a href="news-detail.html" class="news-title-link">Healthy Lifestyle and happy living tips</a>
+                                        <a href="news-detail.html" class="news-title-link"><?php  the_title();    ?></a>
                                     </h5>
                                 </div>
                             </div> 
                         </div>
-
-                        <div class="col-lg-6 col-md-6 col-12">
-                            <div class="news-thumb mb-4">
-                                <a href="news-detail.html">
-                                    <img src="<?php echo get_theme_file_uri("/assets/images/news/stefan-johnson-xIFbDeGcy44-unsplash.jpg");?>" class="img-fluid news-image" alt="">
-                                </a>
-                                
-                                <div class="news-text-info news-text-info-large">
-                                    <span class="category-tag bg-danger">Featured</span>
-
-                                    <h5 class="news-title mt-2">
-                                        <a href="news-detail.html" class="news-title-link">How to make a healthy meal</a>
-                                    </h5>
-                                </div>
-                            </div> 
-                        </div>
-
+                       <?php  }else{ ?>
+                              
                         <div class="col-lg-4 col-md-4 col-12">
                             <div class="news-thumb mb-lg-0 mb-lg-4 mb-0">
                                 <a href="news-detail.html">
-                                    <img src="<?php echo get_theme_file_uri("/assets/images/news/gilles-lambert-S_LhjpfIdm4-unsplash.jpg");?>" class="img-fluid news-image" alt="">
+                                    <img src="<?php echo get_the_post_thumbnail_url();?>" class="img-fluid news-image" alt="">
                                 </a>
                                 
                                 <div class="news-text-info">
-                                    <span class="category-tag me-3 bg-info">Promotions</span>
+                                    <span class="category-tag me-3 bg-info"><?php echo get_the_terms($post->ID, 'category')[0]->name;    ?></span>
 
-                                    <strong>8 April 2022</strong>
+                                    <strong><?php  the_time('d M Y');   ?></strong>
 
                                     <h5 class="news-title mt-2">
-                                        <a href="news-detail.html" class="news-title-link">Is Coconut good for you?</a>
+                                        <a href="news-detail.html" class="news-title-link"><?php  the_title();    ?></a>
                                     </h5>
                                 </div>
                             </div> 
                         </div>
 
-                        <div class="col-lg-4 col-md-4 col-12">
-                            <div class="news-thumb mb-lg-0 mb-lg-4 mb-2">
-                                <a href="news-detail.html">
-                                    <img src="<?php echo get_theme_file_uri("/assets/images/news/caroline-attwood-bpPTlXWTOvg-unsplash.jpg");?>" class="img-fluid news-image" alt="">
-                                </a>
-                                
-                                <div class="news-text-info">
-                                    <span class="category-tag">News</span>
-
-                                    <h5 class="news-title mt-2">
-                                        <a href="news-detail.html" class="news-title-link">Salmon Steak Noodle</a>
-                                    </h5>
-                                </div>
-                            </div> 
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-12">
-                            <div class="news-thumb mb-4">
-                                <a href="news-detail.html">
-                                    <img src="<?php echo get_theme_file_uri("/assets/images/news/louis-hansel-GiIiRV0FjwU-unsplash.jpg");?>" class="img-fluid news-image" alt="">
-                                </a>
-                                
-                                <div class="news-text-info">
-                                    <span class="category-tag me-3 bg-info">Meeting</span>
-
-                                    <strong>30 April 2022</strong>
-
-                                    <h5 class="news-title mt-2">
-                                        <a href="news-detail.html" class="news-title-link">Making a healthy salad</a>
-                                    </h5>
-                                </div>
-                            </div> 
-                        </div>
+                      <?php }
+                        $count_post++;
+                        endwhile;  wp_reset_postdata();  ?>
+                    
 
                     </div>
                 </div>

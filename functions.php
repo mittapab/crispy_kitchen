@@ -1,5 +1,34 @@
-<?php   
+<?php // require get_template_directory() . '/include/theme-options.php';   
 
+
+function wp_theme_setup() {
+	/**
+	 * Load translation identity
+	 * add default WordPress support for title, feed and enable post thumbnail in post/page.
+	 */
+	load_theme_textdomain( 'wp-theme-prototype' );
+	add_theme_support( 'automatic-feed-links' );
+	add_theme_support( 'title-tag' );
+	add_theme_support( 'post-thumbnails' );
+
+	/**
+	 * un comment these lines if you want to register your own image size
+	 * it's effect when uploading new image.
+	 */
+	// add_image_size( 'cover-image', 400, 300, true );
+	// add_image_size( 'wp-theme-prototype-600', 600, 300, true );
+	add_image_size( 'product', 400, 400, array('center' , 'center') );
+
+
+	add_theme_support( 'html5', array(
+		'comment-form',
+		'comment-list',
+		'gallery',
+		'caption',
+	) );
+}
+
+add_action( 'after_setup_theme', 'wp_theme_setup' );
 
 function add_support_theme(){
     register_nav_menus( array(
@@ -18,6 +47,7 @@ function add_theme_script(){
     wp_enqueue_style('crispy-boot' , get_theme_file_uri('/assets/css/bootstrap-icons.css'), array() , '1.0.0');
     wp_enqueue_style('crispy-main' , get_theme_file_uri('/assets/css/tooplate-crispy-kitchen.css'), array() , '1.0.0');
     wp_enqueue_style('crispy-font' , '//fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap', array() , '1.0.0');
+	
 
     //javascript
 
@@ -28,7 +58,18 @@ function add_theme_script(){
     
 }
 
+function add_admin_panel_script(){
+   
+    //css
+    wp_enqueue_style('wp-style', get_stylesheet_uri(), array(), '1.0.0');
+    wp_enqueue_style('crispy' , get_theme_file_uri('/assets/css/bootstrap.min.css'), array() , '1.0.0');
+    wp_enqueue_style('crispy-boot' , get_theme_file_uri('/assets/css/bootstrap-icons.css'), array() , '1.0.0');
+    wp_enqueue_style('crispy-font' , '//fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap', array() , '1.0.0');
+    
+}
+
 add_action("wp_enqueue_scripts" , 'add_theme_script');
+add_action('admin_enqueue_scripts', 'add_admin_panel_script' );
 
 
 // custom option theme
@@ -147,6 +188,10 @@ function add_food_post_type(){
 
 add_action( 'init', 'add_food_post_type' );
 
+/** ========================================================================================================== */
+
+
+
 function add_custom_taxonomies() {
 	
 	register_taxonomy('Categories_Menus', 'food', array(
@@ -189,273 +234,23 @@ function add_custom_taxonomies() {
   }
   add_action( 'init', 'add_custom_taxonomies', 0 );
 
-/**===================================================================================================================== */
+/**========================================= Theme options ================================================== */
 
 
-/*
-* @ include file in theme
-* Register different customizer options
-* @Logo option
-* @footer copyright option   
-* @Color schemes for navigation and footer
-*/
-function customtheme_customize_register( $wp_customize ){
-		
-	$wp_customize->add_section( 'image-options', array(
-		"title" => __("Image Options", "customtheme"),
-		"priority" => 160,				
-	) );
-	
-	$wp_customize->add_section( 'footer-options', array(
-		"title" => __("Footer Options", "customtheme"),
-		"priority" => 160,				
-	) );
-	
-	$wp_customize->add_section( 'bg-color-options', array(
-		"title" => __("Color Options", "customtheme"),
-		"description" => __( 'Change background color of header and footer' ),
-		"priority" => 160,				
-	) );
-	
-	/*
-	* Transport has two types
-	* @postMessage = the changes will take place in real time as it happens without refresh
-	* @refresh = changes will take place after clicking "save" button and refresh
-	* @type = its value can be "theme_mod" or "option"
-	* @theme_mod = This options is sticked to theme.
-	*/	
-	
-	// Add settings and control for logo upload
-	$wp_customize->add_setting("upload_logo", array(
-		"type" => "theme_mod", // or 'option'
-		"capability" => "edit_theme_options",
-		"default" => "",
-		"transport" => "postMessage",
-		'sanitize_callback' => '',
-  		'sanitize_js_callback' => '' // Basically to_json.
-	));
-
-	$wp_customize->add_control( new WP_Customize_Media_Control(
-		$wp_customize, 'upload_logo', 
-		array( // setting id
-			'label'    => __( 'Upload Logo', 'customtheme' ),
-			'section'  => 'image-options',
-			'priority' => 1,
-		)
-	) );
-	
-	// Add copy right text in the footer
-	$wp_customize->add_setting("footer_copyright", array(
-		"default" => "&copy 2016 Business. Powered by Allshore.",
-		"transport" => "postMessage",
-	));
-	$wp_customize->add_control( 'footer_copyright', array( // setting id
-		'label'    => __( 'Footer Copyright Text', 'customtheme' ),
-		'section'  => 'footer-options', // section id
-		'type'     => 'text',
-		'priority' => 1,
-	) );
-	
-	######################### COLOR SCHEME SECTION #########################
-	// Add color scheme options, dropdown of different colors
-	
-	$wp_customize->add_setting("bg_color_scheme", array(
-		"default" => "default",
-		"sanitize_callback" => "customtheme_sanitize_color_scheme",
-		"transport" => "postMessage",
-	));
-	
-	$wp_customize->add_control( "bg_color_scheme", array(
-		"label"    => __( "Background colors scheme", "customtheme" ),
-		"section"  => "bg-color-options",
-		"type"     => "select",
-		"choices"  => customtheme_get_color_scheme_choices(),
-		'priority' => 1,
-	) );
-	$color_scheme = customtheme_get_color_scheme();
-		
-	// Add page background color setting and control.
-	$wp_customize->add_setting( 'header_background_color', array(
-		'default'           => $color_scheme[0],
-		'sanitize_callback' => 'sanitize_hex_color',
-		'transport'         => 'postMessage',
-	) );
-
-	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'header_background_color', array(
-		'label'       => __( 'Navigation Background Color', 'customtheme' ),
-		'section'     => 'bg-color-options',
-		'alpha'       => true,
-	) ) );
-	
-	// Add page background color setting and control.
-	$wp_customize->add_setting( 'footer_background_color', array(
-		'default'           => $color_scheme[1],
-		'sanitize_callback' => 'sanitize_hex_color',
-		'transport'         => 'postMessage',
-	) );
-
-	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'footer_background_color', array(
-		'label'       => __( 'Footer Background Color', 'customtheme' ),
-		'section'     => 'bg-color-options',
-	) ) );
+function add_theme_panal(){
+	add_menu_page('Theme options', 'Theme Settings' , 'manage_options', 'Theme-options' , 'theme_init', 'dashicons-layout', 100 );
+    add_submenu_page('Theme-options', 'Logo' , 'Logo' , 'manage_options', 'Theme-options' , 'theme_init');
+	add_submenu_page('Theme-options', 'Header Menu' , 'Header Menu' , 'manage_options', 'header_menu' , 'theme_init');
+	add_submenu_page('Theme-options', 'Header Event & Post' , 'Header Event & Post' , 'manage_options', 'event_post' , 'theme_init');
 	
 }
-add_action("customize_register","customtheme_customize_register");
 
-if ( ! function_exists( 'customtheme_get_color_scheme_choices' ) ) :
-	/**
-	 * Retrieves an array of color scheme choices registered.
-	 * @Dropdown for different color options, default,dark,gray,red,yellow
-	*/
-	function customtheme_get_color_scheme_choices(){
-		
-		$bg_color_schemes  = customtheme_get_color_schemes();
-		$bg_color_scheme_control_options = array();
-		foreach ( $bg_color_schemes as $color_scheme => $value ) {
-			$bg_color_scheme_control_options[ $color_scheme ] = $value['label'];
-		}
-		
-		return $bg_color_scheme_control_options;
-		
-	}	
-endif;
+add_action('admin_menu' ,'add_theme_panal');
 
-if ( ! function_exists( 'customtheme_get_color_schemes' )):
-	/**
-	 * The default schemes include 'default', 'dark', 'gray', 'red', and 'yellow'.
-	 * @param array $schemes {
-	 *     Associative array of color schemes data.
-	 * You can add your own color using add_filter
-	 *
-	 */
-	function customtheme_get_color_schemes(){
-			return apply_filters( 'customtheme_color_schemes', array(
-			'default' => array(
-				'label'  => __( 'Default', 'customtheme' ),
-				'colors' => array(
-					'#1a1a1a',
-					'#ffffff',
-					'#007acc',
-					'#1a1a1a',
-					'#686868',
-				),
-			),
-			'dark' => array(
-				'label'  => __( 'Dark', 'customtheme' ),
-				'colors' => array(
-					'#262626',
-					'#1a1a1a',
-					'#9adffd',
-					'#e5e5e5',
-					'#c1c1c1',
-				),
-			),
-			'gray' => array(
-				'label'  => __( 'Gray', 'customtheme' ),
-				'colors' => array(
-					'#c9c9c9',
-					'#4d545c',
-					'#c7c7c7',
-					'#f2f2f2',
-					'#f2f2f2',
-				),
-			),
-			'red' => array(
-				'label'  => __( 'Red', 'customtheme' ),
-				'colors' => array(
-					'#dd1111',
-					'#ff675f',
-					'#640c1f',
-					'#402b30',
-					'#402b30',
-				),
-			),
-			'yellow' => array(
-				'label'  => __( 'Yellow', 'customtheme' ),
-				'colors' => array(
-					'#eeee22',
-					'#ffef8e',
-					'#774e24',
-					'#3b3721',
-					'#5b4d3e',
-				),
-			),
-		) );
-	}
-endif;
-/*
-* Enqueue javascript file for real time changes
-* put theme-customizer.js file in js folder of theme
-*/ 
-function customtheme_customizer_live_preview() {
-	wp_enqueue_script( 'custom_css_preview', get_template_directory_uri() . '/js/theme-customizer.js', array( 'customize-preview', 'jquery' ) );  	
-	wp_localize_script( 'custom_css_preview', 'colorScheme', customtheme_get_color_schemes() ); // color schemes global variable
-	wp_localize_script( 'custom_css_preview', 'ajax_object',
-		array( 
-			'ajaxurl' => admin_url( 'admin-ajax.php' ),
-		)
-	);
+function theme_init(){
+
 }
-add_action( 'customize_preview_init', 'customtheme_customizer_live_preview' );
 
-if ( ! function_exists( 'customtheme_sanitize_color_scheme' ) ) :
-/**
- * Handles sanitization color schemes.
- */
-function customtheme_sanitize_color_scheme( $value ) {
-	
-	$color_schemes = customtheme_get_color_scheme_choices();
-	if ( ! array_key_exists( $value, $color_schemes ) ) {
-		return 'default';
-	}
-	return $value;
-	
-}
-endif; // customtheme_sanitize_color_scheme
 
-if ( ! function_exists( 'customtheme_get_color_scheme' ) ) :
-/**
- * Retrieves the current color scheme.
-*/
-function customtheme_get_color_scheme() {
-	
-	$color_scheme_option = get_theme_mod( 'bg_color_scheme', 'default' );
-	$color_schemes       = customtheme_get_color_schemes();
-	if ( array_key_exists( $color_scheme_option, $color_schemes ) ) {
-		return $color_schemes[ $color_scheme_option ]['colors'];
-	}
-	return $color_schemes['default']['colors'];	
-}
-endif; // customtheme_get_color_scheme
 
-/*
-* Update css in header.
-*/
-function customtheme_update_background_css(){
-?>
-	<style type="text/css">
-		.navbar.navbar-default { background-color: <?php echo get_theme_mod('header_background_color'); ?>; }
-		footer { background-color: <?php echo get_theme_mod('footer_background_color'); ?>; }
-	</style>
-<?php
-}
-add_action( 'wp_head', 'customtheme_update_background_css' );
-
-/*
-* Logo upload return attachment id, then id is passed to this function through ajax.
-* On success return uploaded logo.
-*/
-function update_customizer_options() {
-    // Handle request then generate response using WP_Ajax_Response
-	$att_id = $_POST['attachment_id'];
-	if( $att_id!='' ){
-		$img_src = wp_get_attachment_image( $att_id, 'medium' );
-		echo $img_src;
-	}
-	exit;
-	
-}
-add_action( 'wp_ajax_update-logo-customizer', 'update_customizer_options' );
-add_action( 'wp_ajax_nopriv_update-logo-customizer', 'update_customizer_options' );
-?>
 

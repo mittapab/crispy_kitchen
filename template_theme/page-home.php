@@ -1,4 +1,5 @@
 <?php /* Template Name: Home */ ?>
+<?php  require get_template_directory() . '/include/library.php';   ?>
 
 <?php  get_header();   ?>
         <main>
@@ -14,5 +15,7 @@
 
         </main>
 
-    
+       
+
+
 <?php  get_footer();   ?>

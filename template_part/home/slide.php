@@ -1,4 +1,4 @@
-<?php  require get_template_directory() . '/include/library.php';   ?>
+
 <section class="hero">
                 <div class="container">
                     <div class="row">
