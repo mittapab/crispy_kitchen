@@ -5,17 +5,28 @@
                 
                 <div class="row">
 
+                
+
                     <div class="col-12">
                         <h4 class="text-white mb-4 me-5">Crispy Kitchen</h4>
                     </div>
 
                     <div class="col-lg-4 col-md-7 col-xs-12 tooplate-mt30">
-                        <h6 class="text-white mb-lg-4 mb-3">Location</h6>
+                        <!-- <h6 class="text-white mb-lg-4 mb-3">Location</h6>
 
                         <p>121 Einstein Loop N, Bronx, NY 10475, United States</p>
 
-                        <a href="https://goo.gl/maps/wZVGLA7q64uC1s886" class="custom-btn btn btn-dark mt-2">Directions</a>
+                        <a href="https://goo.gl/maps/wZVGLA7q64uC1s886" class="custom-btn btn btn-dark mt-2">Directions</a> -->
+
+                        <?php if ( is_active_sidebar( 'new-widget-area' ) ) : ?>
+                                <div id="secondary-sidebar" class="new-widget-area">
+                                <?php dynamic_sidebar( 'new-widget-area' ); ?>
+                                </div>
+                        <?php endif; ?>
                     </div>
+
+
+
 
                     <div class="col-lg-4 col-md-5 col-xs-12 tooplate-mt30">
                         <h6 class="text-white mb-lg-4 mb-3">Opening Hours</h6>
@@ -58,6 +69,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h3 class="mb-0">Reserve a table</h3>
+
 
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>

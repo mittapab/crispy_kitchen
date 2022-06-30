@@ -7,7 +7,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Crispy Kitchen </title>
+        <title><?php echo get_option('logo_text');   ?></title>
 
         <!-- CSS FILES -->    
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +28,7 @@
                 </button>
                 
                 <a class="navbar-brand" href="index.html">
-                    Crispy Kitchen
+                   <?php echo get_option('logo_text');   ?>
                 </a>
 
                 <div class="d-lg-none">
