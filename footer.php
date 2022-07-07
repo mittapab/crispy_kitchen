@@ -8,7 +8,7 @@
                 
 
                     <div class="col-12">
-                        <h4 class="text-white mb-4 me-5">Crispy Kitchen</h4>
+                        <h4 class="text-white mb-4 me-5"><?php echo get_option('logo_text');   ?></h4>
                     </div>
 
                     <div class="col-lg-4 col-md-7 col-xs-12 tooplate-mt30">

@@ -41,9 +41,9 @@
                             <a class="nav-link <?php  echo (is_front_page()) ? "active":"";  ?>" href="<?php echo site_url("/");  ?>">Home</a>
                         </li>
 
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link <?php  echo (is_page('crispy-story')) ? "active":"";  ?>" href="<?php echo site_url("/crispy-story");  ?>">Story</a>
-                        </li>
+                        </li> -->
 
                         <li class="nav-item">
                             <a class="nav-link <?php  echo (is_page('menu')) ? "active":"";  ?>" href="<?php echo site_url("/menu");  ?>">Menu</a>
